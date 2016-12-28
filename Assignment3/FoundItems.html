@@ -1,8 +1,0 @@
-<h1>Search Results</h1>
-<div ng-if="list.isEmpty()">Not found anything</div>
-<ul>
-  <li ng-repeat="item in list.found">
-    {{item.name}}, {{item.short_name}}, {{item.description}}
-    <button ng-click="list.onRemove({index: $index});">Remove this!</button>
-  </li>
-</ul>
