@@ -12,34 +12,41 @@ function RoutesConfig($stateProvider, $urlRouterProvider) {
 
   // *** Set up UI states ***
   $stateProvider
+
   // Home page
   .state('home', {
     url: '/',
-    templateUrl: 'src/menu/templates/home.template.html'
+    templateUrl: 'src/home.template.html'
   })
-  // Categories list page
+
+  // Categories page
   .state('categories', {
     url: '/categories',
-    templateUrl: 'src/menu/templates/categories.template.html',
+    templateUrl: 'src/categories.template.html',
     controller: 'CategoriesController as categoriesCtrl',
     resolve: {
-      items: ['MenuDataService', function (MenuDataService) {
-        return MenuDataService.getAllCategories();
+      categories: ['MenuDataService', function(MenuDataService) {
+        return MenuDataService.getAllCategories().then(function(response) {
+          return response.data;
+        });
       }]
     }
   })
-  // Items list page
-  .state('categories.items', {
-     url: '/{categoryShortName}/items',
-     templateUrl: 'src/menu/templates/items.template.html',
-     controller: 'ItemsController as itemsCtrl',
-     resolve: {
-       items: ['$stateParams', 'MenuDataService', function ($stateParams, MenuDataService) {
-         return MenuDataService.getItemsForCategory($stateParams.categoryShortName);
-       }]
-     }
-});
 
+  // Items page
+  .state('items', {
+    url: '/items/{category}',
+    templateUrl: 'src/items.template.html',
+    controller: 'ItemsController as itemsCtrl',
+    resolve: {
+      items: ['MenuDataService', '$stateParams', function(MenuDataService, $stateParams) {
+        return MenuDataService.getItemsForCategory($stateParams.category).then(function(response) {
+          return response.data.menu_items;
+        });
+      }]
+    }
+  })
+  ;
 }
 
 })();
